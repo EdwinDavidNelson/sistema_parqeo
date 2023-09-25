@@ -96,7 +96,40 @@ try:
                 cur.execute('SELECT * FROM registro')
                 for record in cur.fetchall():
                     print(record)
+            
+            #submenu para registro (MODIFICACION)
+            def registro():
+                print("==================================")
+                print("\nMenu de Reportes")
+                print("1. Generar Reporte Ganancias")
+                print("2. Generar Reporte de Vehiculos")
+                opcion = int(input("Ingrese numero de opcion: "))
+                if opcion == 1:
+                    print("\n\tReporte de Ganancias")
+                    generar_reporte_ganancias()
+                    
+                elif opcion == 2:
+                    print("\n\tReporte de Vehiculos")
+                    generar_reporte_vehiculos()
+                else:
+                    print("Opción no válida.\n")
+            
+            def calcular_ganancias():
+                cur.execute("SELECT COUNT(*) FROM registro WHERE hora IS NOT NULL")
+                total_registros = cur.fetchone()[0]
+                ganancias = total_registros * 5
+                return ganancias
 
+            def generar_reporte_ganancias():
+                ganancias = calcular_ganancias()
+                print(f"Total de Ganancias al Día de Hoy: ${ganancias:.2f}".format(ganancias))
+
+            def generar_reporte_vehiculos():
+                cur.execute("SELECT marca, COUNT (*) FROM registro GROUP BY marca")
+                for record in cur.fetchall():
+                    marca = record[0]
+                    cantidad = record[1]
+                    print("{}: {}".format(marca, cantidad)) 
 #------------------------------------------------------------------------------------------
             #se crea el menu central del programa
             def menu():
@@ -106,7 +139,8 @@ try:
                     print("1. Registrar Entrada")
                     print("2. Registrar Salida")
                     print("3. Ver Historial")
-                    print("4. Salir")
+                    print("4. Reportes")
+                    print("5. Salir")
 
                     opcion = input("Seleccione una opción: ")
                     print()
@@ -118,6 +152,9 @@ try:
                     elif opcion == "3":
                         ver_historial()
                     elif opcion == "4":
+                        #aqui va la actualizacion
+                        registro()
+                    elif opcion == "5":
                         print("Cerrando Programa")
                         break
                     else:
